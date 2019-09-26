@@ -38,7 +38,9 @@ cas-x:
         
       # 自建APP授权访问的服务
       clients:
-        shop: http://shop.example.com
+        shop:
+          name: pet商店
+          url: http://shop.example.com
 ```
 
 ## 工作台应用主页授权

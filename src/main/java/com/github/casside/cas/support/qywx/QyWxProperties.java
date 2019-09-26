@@ -1,6 +1,8 @@
 package com.github.casside.cas.support.qywx;
 
+import com.github.casside.cas.support.ClientServer;
 import java.util.HashMap;
+import java.util.Map;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,6 +13,8 @@ import org.apereo.cas.configuration.model.support.pac4j.Pac4jOAuth20ClientProper
 @Getter
 @Setter
 public class QyWxProperties extends Pac4jOAuth20ClientProperties {
+
+    private Map<String, ClientServer> clients;
 
     public QyWxProperties() {
         this.setCustomParams(new HashMap<>());

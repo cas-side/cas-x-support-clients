@@ -1,7 +1,6 @@
 package com.github.casside.cas.support.qywx;
 
-import com.github.casside.cas.support.ClientServers;
-import com.github.casside.cas.support.ClientServers.ClientServer;
+import com.github.casside.cas.support.ClientServer;
 import com.github.casside.cas.support.DelagatedClientProperties;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -20,7 +19,6 @@ import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.context.J2EContext;
 import org.pac4j.core.exception.HttpAction;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,18 +27,17 @@ import org.springframework.web.servlet.view.RedirectView;
 
 /**
  * 企业微信授权 action
+ *
  * @deprecated `/qy_wx` 这个URI是我自己保留使用，将在以后废弃
  */
 @Controller
 @RequestMapping(value = {"/qy_wx", "/cas-x-qy-wx/clients"})
 @RequiredArgsConstructor
 @Slf4j
-@ConditionalOnBean(ClientServers.class)
 public class QyWxAuthenticationAction {
 
     @Value("${cas.server.name}")
     private       String                    ssoUrl;
-    private final ClientServers             clientServers;
     private final DelagatedClientProperties delagatedClientProperties;
 
     private final Clients                       clients;
@@ -58,9 +55,9 @@ public class QyWxAuthenticationAction {
     @RequestMapping("/{client}")
     public RedirectView to(@PathVariable("client") String client, final HttpServletRequest request, final HttpServletResponse response)
         throws UnsupportedEncodingException {
-        ClientServer clientServer = clientServers.get(client);
+        ClientServer clientServer = delagatedClientProperties.getQyWx().getClients().get(client);
         if (clientServer == null) {
-            throw new NullPointerException("no such a client server");
+            throw new NullPointerException(String.format("no such a client server: %s", client));
         }
 
         String clientName = delagatedClientProperties.getQyWx().getClientName();
