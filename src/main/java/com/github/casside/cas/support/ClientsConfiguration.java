@@ -1,5 +1,6 @@
 package com.github.casside.cas.support;
 
+import com.github.casside.cas.support.qywx.QyWxAuthenticationAction;
 import com.github.casside.cas.support.qywx.QyWxClient;
 import com.github.casside.cas.support.qywx.QyWxProfileDefinition;
 import com.github.casside.cas.support.qywx.QyWxProperties;
@@ -14,7 +15,11 @@ import org.apache.commons.lang3.StringUtils;
 import org.apereo.cas.authentication.principal.ClientCustomPropertyConstants;
 import org.apereo.cas.configuration.CasConfigurationProperties;
 import org.apereo.cas.configuration.model.support.pac4j.Pac4jBaseClientProperties;
+import org.apereo.cas.web.DelegatedClientWebflowManager;
+import org.apereo.cas.web.pac4j.DelegatedSessionCookieManager;
 import org.pac4j.core.client.BaseClient;
+import org.pac4j.core.client.Clients;
+import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -97,6 +102,16 @@ public class ClientsConfiguration {
 
             return client;
         }
+
+        @Bean
+        public QyWxAuthenticationAction qyWxAuthenticationAction(Clients clients,
+                                                                 DelegatedClientWebflowManager delegatedClientWebflowManager,
+                                                                 DelegatedSessionCookieManager delegatedSessionCookieManager,
+                                                                 BeanFactory beanFactory) {
+            return new QyWxAuthenticationAction(delagatedClientProperties, clients, delegatedClientWebflowManager, delegatedSessionCookieManager,
+                                                beanFactory);
+        }
+
     }
 
 }

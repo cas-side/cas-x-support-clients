@@ -4,7 +4,7 @@
 
     <groupId>com.github.cas-side</groupId>
     <artifactId>cas-x-support-clients</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <packaging>jar</packaging>
 
     <name>cas-x-support-clients</name>
@@ -189,7 +189,7 @@
                 <executions>
                     <execution>
                         <id>sign-artifacts</id>
-                        <phase>verify</phase>
+                        <phase>deploy</phase>
                         <goals>
                             <goal>sign</goal>
                         </goals>
