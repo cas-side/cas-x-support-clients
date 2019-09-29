@@ -12,7 +12,7 @@
 <dependency>
     <groupId>com.github.cas-side</groupId>
     <artifactId>cas-x-support-clients</artifactId>
-    <version>${cas-x-support-clients.version}</version>
+    <version>1.0.1</version>
 </dependency>
 ```
 
@@ -51,10 +51,10 @@ cas-x:
 该功能需要配置`cas-x.authn.qy_wx.clients`
 
 然后在 （自建APP -> 工作台应用主页） 设置URL：
-`http://{cas.server}/cas-x-qy-wx/clients/{client key set above}`
+`https://open.weixin.qq.com/connect/oauth2/authorize?appid={corp id}&redirect_uri=https://{cas server url}/cas_x_qy_wx/clients/tp/shop&response_type=code&scope=snsapi_base#wechat_redirect`
 
 比如上面我们配置了一个key为`shop`的client，则URL为：
-`http://{cas.server}/cas-x-qy-wx/clients/shop`
+`http://{cas.server}/cas_x_qy_wx/clients/tp/shop`
 
 同时，你必须保证shop已经对接了cas.server，否则...你还怎么做授权
 
@@ -64,3 +64,7 @@ cas-x:
 需要从数据库查询用户信息，可以定义一个Bean，
 继承自 `com.github.casside.cas.support.qywx.UserProfileService`,
 并重写 `get(String qyWxUserId)` 方法
+
+## reference
+
+- [对接流程](https://mp.weixin.qq.com/s/1veDc6tokDSS7TtTE4TokA).
