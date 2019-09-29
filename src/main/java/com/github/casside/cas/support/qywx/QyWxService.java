@@ -11,15 +11,15 @@ import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 
 /**
- * 作用：<br/>
+ * 作用：<br>
  *
- * - 构建 access_token 请求 <br/>
+ * - 构建 access_token 请求 <br>
  *
- * - 维护 access_token <br/>
+ * - 维护 access_token <br>
  *
- * - 构建 refresh_token 请求 <br/>
+ * - 构建 refresh_token 请求 <br>
  *
- * - 请求签名 <br/>
+ * - 请求签名 <br>
  */
 public class QyWxService extends OAuth20Service {
 
