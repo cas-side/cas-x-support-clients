@@ -103,6 +103,7 @@ public class QyWxAuthenticationAction implements InitializingBean {
         ClientServer clientServer = delagatedClientProperties.getQyWx().getClients().get(client);
         String       clientUrl    = clientServer.getUrl();
         // 生成登录票据
+        request.setAttribute("service", clientUrl);
         Ticket ticket = genTicket(clientName, request, response);
 
         StringBuilder ssoLoginUrl = new StringBuilder(
