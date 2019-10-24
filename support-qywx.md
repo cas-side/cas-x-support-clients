@@ -58,6 +58,33 @@ cas-x:
 
 同时，你必须保证shop已经对接了cas.server，否则...你还怎么做授权
 
+## 在首页嵌入企业微信二维码
+
+```html
+<div id="wx_reg"></div>
+
+<script>
+$.get("cas_x_qy_wx/qr_code_params", function(res) {
+    if(res.code === 0) {
+        // 这里具体配置参考企业微信：
+        // https://work.weixin.qq.com/api/doc#90000/90135/91019/%E6%9E%84%E9%80%A0%E5%86%85%E5%B5%8C%E7%99%BB%E5%BD%95%E4%BA%8C%E7%BB%B4%E7%A0%81
+        window.WwLogin({
+            "id" : "wx_reg",
+            "appid" : res.data.corpId,
+            "agentid" : res.data.agentId,
+            "redirect_uri" : res.data.redirectUri,
+            "state" : res.data.state,
+            "href" : res.data.href
+        });
+    } else if(res.code === 404) {
+        console.log("has no config qy_wx qr");
+    } else {
+        console.warn(res.msg);
+    }
+});
+</script>
+```
+
 ## 如何关联自己的用户数据库
 
 如果你的系统已经将企业微信用户和数据库用户进行关联，

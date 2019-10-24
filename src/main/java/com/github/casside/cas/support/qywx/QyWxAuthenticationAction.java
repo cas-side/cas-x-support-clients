@@ -1,8 +1,11 @@
 package com.github.casside.cas.support.qywx;
 
+import com.alibaba.fastjson.JSONObject;
 import com.github.casside.cas.support.ClientServer;
 import com.github.casside.cas.support.DelagatedClientProperties;
+import com.github.casside.cas.util.TicketUtil;
 import com.github.casside.util.ControllerUtil;
+import com.github.casside.util.URLUtil;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Enumeration;
@@ -10,23 +13,23 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.apereo.cas.services.UnauthorizedServiceException;
 import org.apereo.cas.ticket.Ticket;
-import org.apereo.cas.util.Pac4jUtils;
 import org.apereo.cas.web.DelegatedClientWebflowManager;
 import org.apereo.cas.web.pac4j.DelegatedSessionCookieManager;
 import org.pac4j.core.client.Clients;
 import org.pac4j.core.client.IndirectClient;
-import org.pac4j.core.context.J2EContext;
 import org.pac4j.core.exception.HttpAction;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.shell.support.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.view.RedirectView;
 
 /**
@@ -76,7 +79,9 @@ public class QyWxAuthenticationAction implements InitializingBean {
         // 这里也要指定service，如果是已登录状态，会根据这里的service进行重定向
         String ssoLoginUrl = String.format("%s/login?client_name=%s&service=%s", ssoUrl, clientName, clientUrl);
 
-        Ticket ticket = genTicket(clientName, request, response);
+        Ticket ticket = TicketUtil
+            .genTransientServiceTicket(delegatedClientWebflowManager, delegatedSessionCookieManager, (IndirectClient) clients.findClient(clientName),
+                                       request, response, clientUrl);
 
         // 微信授权URL
         String qyWxAuthorizeUrl = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=%s&redirect_uri=%s&response_type=code&scope=snsapi_base&state=%s#wechat_redirect";
@@ -103,8 +108,9 @@ public class QyWxAuthenticationAction implements InitializingBean {
         ClientServer clientServer = delagatedClientProperties.getQyWx().getClients().get(client);
         String       clientUrl    = clientServer.getUrl();
         // 生成登录票据
-        request.setAttribute("service", clientUrl);
-        Ticket ticket = genTicket(clientName, request, response);
+        IndirectClient indirectClient = (IndirectClient) clients.findClient(clientName);
+        Ticket ticket = TicketUtil
+            .genTransientServiceTicket(delegatedClientWebflowManager, delegatedSessionCookieManager, indirectClient, request, response, clientUrl);
 
         StringBuilder ssoLoginUrl = new StringBuilder(
             String.format("%s/login?client_name=%s&service=%s&state=%s", ssoUrl, URLEncoder.encode(clientName), clientUrl, ticket.getId()));
@@ -124,21 +130,55 @@ public class QyWxAuthenticationAction implements InitializingBean {
         return new RedirectView(ssoLoginUrl.toString());
     }
 
+    @GetMapping("/qr_code_params")
+    @ResponseBody
+    public JSONObject getQrCodeParams(@RequestHeader(name = "referer", required = false) String referrer, final HttpServletRequest request,
+                                      final HttpServletResponse response) {
+
+        String service = null;
+        if (!StringUtils.isEmpty(referrer)) {
+            service = URLUtil.getParam(referrer, "service");
+        }
+
+        // 标识，使用企业微信的client进行登录处理
+        QyWxProperties qyWx       = delagatedClientProperties.getQyWx();
+        String         clientName = qyWx.getClientName();
+
+        String ssoLoginUrl = null;
+
+        if (StringUtils.isEmpty(referrer)) {
+            ssoLoginUrl = String.format("%s/login?client_name=%s", ssoUrl, clientName);
+        } else {
+            ssoLoginUrl = String.format("%s/login?client_name=%s&service=%s", ssoUrl, clientName, referrer);
+        }
+
+        // gen TransientServiceTicket
+        Ticket tst = TicketUtil
+            .genTransientServiceTicket(delegatedClientWebflowManager, delegatedSessionCookieManager, (IndirectClient) clients.findClient(clientName),
+                                       request, response, referrer);
+
+        String state = tst.getId();
+
+        String         cssHref = ssoUrl + "/qy_wx/css/qr.css";
+        QrCodeJsConfig config  = new QrCodeJsConfig(qyWx.getId(), qyWx.getCustomParams().get("agentid"), ssoLoginUrl, state, cssHref);
+
+        JSONObject json = new JSONObject();
+        json.put("code", 0);
+        json.put("data", config);
+        return json;
+    }
+
     /**
      * 生成授权用ticket，将在登录处理器中进行验证
      */
     private Ticket genTicket(String clientName, final HttpServletRequest request, final HttpServletResponse response) {
         try {
-            if (StringUtils.isBlank(clientName)) {
+            if (StringUtils.isEmpty(clientName)) {
                 throw new UnauthorizedServiceException("No client name parameter is provided in the incoming request");
             }
-            final IndirectClient client     = (IndirectClient) this.clients.findClient(clientName);
-            final J2EContext     webContext = Pac4jUtils.getPac4jJ2EContext(request, response);
-            final Ticket         ticket     = delegatedClientWebflowManager.store(webContext, client);
-
-            // TODO
-            client.getRedirectAction(webContext);
-            this.delegatedSessionCookieManager.store(webContext);
+            final IndirectClient client = (IndirectClient) this.clients.findClient(clientName);
+            Ticket ticket = TicketUtil
+                .genTransientServiceTicket(delegatedClientWebflowManager, delegatedSessionCookieManager, client, request, response, null);
             return ticket;
         } catch (final HttpAction e) {
             if (e.getCode() == HttpStatus.UNAUTHORIZED.value()) {
