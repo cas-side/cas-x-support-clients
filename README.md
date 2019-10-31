@@ -2,6 +2,16 @@
 
 cas委托代理扩展客户端
 
+## 使用
+
+```xml
+<dependency>
+    <groupId>com.github.cas-side</groupId>
+    <artifactId>cas-x-support-clients</artifactId>
+    <version>1.0.3</version>
+</dependency>
+```
+
 ## 已支持的客户端
 
 - [企业微信](./support-qywx.md)

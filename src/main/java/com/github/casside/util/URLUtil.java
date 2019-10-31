@@ -8,7 +8,7 @@ public class URLUtil {
 
     public static String getParam(String url, String name) {
         String[] splits = url.split("\\?");
-        if (splits.length > 0) {
+        if (splits.length > 1) {
             List<String> p = URLUtils.parseParameters(splits[1]).get(name);
             if (!CollectionUtils.isEmpty(p)) {
                 return p.get(0);

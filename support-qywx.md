@@ -6,18 +6,6 @@
 
 ## 对接流程
 
-- 添加依赖
-
-```xml
-<dependency>
-    <groupId>com.github.cas-side</groupId>
-    <artifactId>cas-x-support-clients</artifactId>
-    <version>1.0.2</version>
-</dependency>
-```
-
-- 添加配置
-
 ```yaml
 cas-x:
   authn:
