@@ -65,6 +65,7 @@ public class QyWxProfileDefinition extends OAuth20ProfileDefinition<OAuth20Profi
         } catch (Exception e) {
             // 这个异常捕捉不要去掉，否则出错CAS不会显示具体错误信息
             log.error(e.getMessage(), e);
+            throw new AuthenticationException(e.getMessage());
         }
         return profile;
     }
