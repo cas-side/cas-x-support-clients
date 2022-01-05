@@ -9,13 +9,12 @@ import lombok.experimental.FieldDefaults;
 import org.pac4j.oauth.client.OAuth20Client;
 import org.pac4j.oauth.config.OAuth20Configuration;
 import org.pac4j.oauth.credentials.authenticator.OAuth20Authenticator;
-import org.pac4j.oauth.profile.OAuth20Profile;
-import org.pac4j.oauth.redirect.OAuth20RedirectActionBuilder;
+import org.pac4j.oauth.redirect.OAuth20RedirectionActionBuilder;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Getter
 @Setter
-public class QyWxClient extends OAuth20Client<OAuth20Profile> {
+public class QyWxClient extends OAuth20Client {
 
     /**
      * 相当于主键ID
@@ -50,7 +49,7 @@ public class QyWxClient extends OAuth20Client<OAuth20Profile> {
         profileDefinition.setProfileId(profileId);
         this.profileAttrs.forEach(profileDefinition::addProfileAttribute);
 
-        defaultRedirectActionBuilder(new OAuth20RedirectActionBuilder(configuration, this));
+        defaultRedirectionActionBuilder(new OAuth20RedirectionActionBuilder(configuration, this));
         defaultCredentialsExtractor(new OAuth20CredentialsCodeExtractor(configuration, this));
         defaultAuthenticator(new OAuth20Authenticator(configuration, this));
         defaultProfileCreator(new QyWxProfileCreator(configuration, this));

@@ -1,6 +1,5 @@
 package com.github.casside.cas.support.qywx;
 
-import java.util.Collections;
 import java.util.Map;
 
 /**
@@ -8,13 +7,11 @@ import java.util.Map;
  *
  * 当你需要从数据库查询其他字段的时候，重写 {@link #get(String)} 方法
  */
-public class UserProfileService {
+public interface UserProfileService {
 
     /**
      * @param qyWxUserId 企业微信 UserId
      * @return 企业微信 user profile
      */
-    public Map<String, Object> get(String qyWxUserId) {
-        return Collections.emptyMap();
-    }
+    Map<String, Object> get(String qyWxUserId);
 }

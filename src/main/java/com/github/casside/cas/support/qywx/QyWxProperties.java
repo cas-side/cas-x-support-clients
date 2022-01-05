@@ -7,7 +7,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
-import org.apereo.cas.configuration.model.support.pac4j.Pac4jOAuth20ClientProperties;
+import org.apereo.cas.configuration.model.support.pac4j.oauth.Pac4jOAuth20ClientProperties;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Getter

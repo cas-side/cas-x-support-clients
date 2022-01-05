@@ -1,6 +1,7 @@
 package com.github.casside.cas.support;
 
 import com.github.casside.cas.support.qywx.QyWxCodeOnceHolder;
+import java.util.Optional;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.oauth.config.OAuth20Configuration;
@@ -17,13 +18,14 @@ public class OAuth20CredentialsCodeExtractor extends OAuth20CredentialsExtractor
     }
 
     @Override
-    protected OAuth20Credentials getOAuthCredentials(WebContext context) {
-        OAuth20Credentials oAuthCredentials = super.getOAuthCredentials(context);
+    protected Optional<OAuth20Credentials> getOAuthCredentials(WebContext context) {
+        Optional<OAuth20Credentials> opt = super.getOAuthCredentials(context);
+        opt.ifPresent(oAuthCredentials -> {
+            // hold 住 code
+            String code = oAuthCredentials.getCode();
+            QyWxCodeOnceHolder.set(code);
+        });
 
-        // hold 住 code
-        String code = oAuthCredentials.getCode();
-        QyWxCodeOnceHolder.set(code);
-
-        return oAuthCredentials;
+        return opt;
     }
 }

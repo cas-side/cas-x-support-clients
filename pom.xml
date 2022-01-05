@@ -4,7 +4,7 @@
 
     <groupId>com.github.cas-side</groupId>
     <artifactId>cas-x-support-clients</artifactId>
-    <version>1.0.3</version>
+    <version>6.3.7.4</version>
     <packaging>jar</packaging>
 
     <name>cas-x-support-clients</name>
@@ -47,7 +47,7 @@
     <repositories>
         <repository>
             <id>nexus-aliyun</id>
-            <url>http://maven.aliyun.com/nexus/content/groups/public/</url>
+            <url>https://repo1.maven.org/maven2/</url>
         </repository>
         <repository>
             <id>nexus-spring</id>
@@ -57,10 +57,10 @@
             <id>shibboleth-releases</id>
             <url>https://build.shibboleth.net/nexus/content/repositories/releases</url>
         </repository>
-        <repository>
-            <id>central</id>
-            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
-        </repository>
+        <!--<repository>-->
+        <!--<id>central</id>-->
+        <!--<url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>-->
+        <!--</repository>-->
     </repositories>
 
     <properties>
@@ -73,15 +73,21 @@
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
 
-        <cas.version>5.3.11</cas.version>
+        <cas.version>6.3.7.4</cas.version>
 
-        <pac4j.version>3.6.1</pac4j.version>
+        <pac4j.version>4.5.4</pac4j.version>
 
         <lombok.version>1.18.8</lombok.version>
 
     </properties>
 
     <dependencies>
+
+        <dependency>
+            <groupId>org.pac4j</groupId>
+            <artifactId>pac4j-oauth</artifactId>
+            <version>${pac4j.version}</version>
+        </dependency>
 
         <dependency>
             <groupId>com.alibaba</groupId>
@@ -135,22 +141,29 @@
         </dependency>
 
         <dependency>
-            <groupId>org.pac4j</groupId>
-            <artifactId>pac4j-oauth</artifactId>
-            <version>${pac4j.version}</version>
-        </dependency>
-
-        <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>${lombok.version}</version>
+            <scope>provided</scope>
         </dependency>
 
+        <dependency>
+            <groupId>com.nimbusds</groupId>
+            <artifactId>oauth2-oidc-sdk</artifactId>
+            <version>9.9.1</version>
+        </dependency>
 
     </dependencies>
 
     <build>
         <plugins>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>11</source>
+                    <target>11</target>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
@@ -164,38 +177,20 @@
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.1.0</version>
-                <configuration>
-                    <doclint>none</doclint>
-                    <additionalparam>-Xdoclint:none</additionalparam>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>attach-javadocs</id>
-                        <phase>compile</phase>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-gpg-plugin</artifactId>
-                <version>1.6</version>
-                <executions>
-                    <execution>
-                        <id>sign-artifacts</id>
-                        <phase>verify</phase>
-                        <goals>
-                            <goal>sign</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
+            <!--<plugin>-->
+            <!--<groupId>org.apache.maven.plugins</groupId>-->
+            <!--<artifactId>maven-gpg-plugin</artifactId>-->
+            <!--<version>1.6</version>-->
+            <!--<executions>-->
+            <!--<execution>-->
+            <!--<id>sign-artifacts</id>-->
+            <!--<phase>verify</phase>-->
+            <!--<goals>-->
+            <!--<goal>sign</goal>-->
+            <!--</goals>-->
+            <!--</execution>-->
+            <!--</executions>-->
+            <!--</plugin>-->
         </plugins>
     </build>
 </project>

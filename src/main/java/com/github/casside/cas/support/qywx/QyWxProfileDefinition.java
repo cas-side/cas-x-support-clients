@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.apereo.cas.authentication.AuthenticationException;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.oauth.config.OAuth20Configuration;
@@ -40,6 +41,9 @@ public class QyWxProfileDefinition extends OAuth20ProfileDefinition<OAuth20Profi
             JSONObject userJson = JSONObject.parseObject(body);
             if (userJson != null) {
                 String qyWxUserId = ProfileHelper.sanitizeIdentifier(profile, userJson.getString("UserId"));
+                if (StringUtils.isEmpty(qyWxUserId)) {
+                    throw new AuthenticationException("WeWork authn fail, no UserId found");
+                }
 
                 // 留下扩展点，当你需要别的地方查询额外的用户信息时，自定义 UserProfileService
                 Map<String, Object> userEntity = userService.get(qyWxUserId);

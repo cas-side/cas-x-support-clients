@@ -1,7 +1,6 @@
 package com.github.casside.cas.support.qywx;
 
 import com.github.scribejava.core.builder.api.DefaultApi20;
-import com.github.scribejava.core.builder.api.OAuth2SignatureType;
 import com.github.scribejava.core.extractors.TokenExtractor;
 import com.github.scribejava.core.httpclient.HttpClient;
 import com.github.scribejava.core.httpclient.HttpClientConfig;
@@ -10,6 +9,8 @@ import com.github.scribejava.core.model.OAuthConstants;
 import com.github.scribejava.core.model.ParameterList;
 import com.github.scribejava.core.model.Verb;
 import com.github.scribejava.core.oauth.OAuth20Service;
+import com.github.scribejava.core.oauth2.bearersignature.BearerSignature;
+import com.github.scribejava.core.oauth2.bearersignature.BearerSignatureURIQueryParameter;
 import java.io.OutputStream;
 import java.util.Map;
 
@@ -40,11 +41,10 @@ public class QyWxApi extends DefaultApi20 {
 
     /**
      * 签名类型，一种是在header头加AUTHORIZATION，一种是在请求参数中
-     * @return
      */
     @Override
-    public OAuth2SignatureType getSignatureType() {
-        return OAuth2SignatureType.BEARER_URI_QUERY_PARAMETER;
+    public BearerSignature getBearerSignature() {
+        return BearerSignatureURIQueryParameter.instance();
     }
 
     public TokenExtractor<OAuth2AccessToken> getAccessTokenExtractor() {
@@ -75,10 +75,10 @@ public class QyWxApi extends DefaultApi20 {
     }
 
     @Override
-    public OAuth20Service createService(String apiKey, String apiSecret, String callback, String scope, OutputStream debugStream, String state,
-                                        String responseType, String userAgent, HttpClientConfig httpClientConfig, HttpClient httpClient) {
+    public OAuth20Service createService(String apiKey, String apiSecret, String callback, String defaultScope, String responseType,
+                                        OutputStream debugStream, String userAgent, HttpClientConfig httpClientConfig, HttpClient httpClient) {
         responseType = "token";
-        return new QyWxService(this, apiKey, apiSecret, callback, scope, state, responseType, userAgent, httpClientConfig, httpClient);
+        return new QyWxService(this, apiKey, apiSecret, callback, defaultScope, responseType, debugStream, userAgent, httpClientConfig, httpClient);
     }
 
     private static class InstanceHolder {
