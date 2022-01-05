@@ -2,6 +2,8 @@
 
 cas委托代理扩展客户端
 
+> 随 [CAS](https://github.com/apereo/cas) 版本同步升级
+
 ## 使用
 
 ```xml
