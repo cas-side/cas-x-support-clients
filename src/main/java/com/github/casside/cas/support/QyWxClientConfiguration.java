@@ -11,7 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apereo.cas.authentication.principal.ClientCustomPropertyConstants;
 import org.apereo.cas.configuration.model.support.pac4j.Pac4jBaseClientProperties;
-import org.apereo.cas.web.DelegatedClientWebflowManager;
+import org.apereo.cas.web.flow.DelegatedClientAuthenticationWebflowManager;
 import org.pac4j.core.client.BaseClient;
 import org.pac4j.core.client.Clients;
 import org.springframework.beans.factory.BeanFactory;
@@ -56,7 +56,7 @@ public class QyWxClientConfiguration {
 
     @Bean
     public QyWxAuthenticationAction qyWxAuthenticationAction(Clients clients,
-                                                             DelegatedClientWebflowManager delegatedClientWebflowManager,
+                                                             DelegatedClientAuthenticationWebflowManager delegatedClientWebflowManager,
                                                              BeanFactory beanFactory) {
         return new QyWxAuthenticationAction(delagatedClientProperties, clients, delegatedClientWebflowManager, beanFactory);
     }

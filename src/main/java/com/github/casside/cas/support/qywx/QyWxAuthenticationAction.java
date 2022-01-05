@@ -16,7 +16,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apereo.cas.services.UnauthorizedServiceException;
 import org.apereo.cas.ticket.Ticket;
-import org.apereo.cas.web.DelegatedClientWebflowManager;
+import org.apereo.cas.web.flow.DelegatedClientAuthenticationWebflowManager;
 import org.pac4j.core.client.Client;
 import org.pac4j.core.client.Clients;
 import org.pac4j.core.client.IndirectClient;
@@ -43,9 +43,9 @@ public class QyWxAuthenticationAction implements InitializingBean {
     private       String                    ssoUrl;
     private final DelagatedClientProperties delagatedClientProperties;
 
-    private final Clients                       clients;
-    private final DelegatedClientWebflowManager delegatedClientWebflowManager;
-    private final BeanFactory                   beanFactory;
+    private final Clients                                     clients;
+    private final DelegatedClientAuthenticationWebflowManager delegatedClientWebflowManager;
+    private final BeanFactory                                 beanFactory;
 
     /**
      * 实现在企业微信app中自动登录到各个客户端，同时借助

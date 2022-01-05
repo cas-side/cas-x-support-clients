@@ -5,7 +5,7 @@ import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apereo.cas.services.UnauthorizedServiceException;
 import org.apereo.cas.ticket.Ticket;
-import org.apereo.cas.web.DelegatedClientWebflowManager;
+import org.apereo.cas.web.flow.DelegatedClientAuthenticationWebflowManager;
 import org.pac4j.core.client.Client;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.context.JEEContext;
@@ -20,7 +20,7 @@ public class TicketUtil {
      *
      * @param returnUrl 登录成功要回跳的URL，即从哪来，最后回到哪去
      */
-    public static Ticket genTransientServiceTicket(DelegatedClientWebflowManager delegatedClientWebflowManager,
+    public static Ticket genTransientServiceTicket(DelegatedClientAuthenticationWebflowManager delegatedClientWebflowManager,
                                                    Client client,
                                                    final HttpServletRequest request, final HttpServletResponse response,
                                                    String returnUrl) {
