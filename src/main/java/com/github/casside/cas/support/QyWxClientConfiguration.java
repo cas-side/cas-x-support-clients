@@ -24,7 +24,7 @@ import org.springframework.context.annotation.Configuration;
  * 配置企业微信Client
  */
 @Configuration
-@EnableConfigurationProperties(QyWxProperties.class)
+@EnableConfigurationProperties(DelagatedClientProperties.class)
 @ConditionalOnProperty(value = "cas-x.authn.qy_wx.enabled", havingValue = "true")
 @Slf4j
 @RequiredArgsConstructor
